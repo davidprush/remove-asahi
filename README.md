@@ -1,10 +1,10 @@
 # remove-asahi.zsh
 
-## Here's a Zsh script designed for macOS that uses diskutil to delete partitions specifically used by Asahi Linux. 
+## Here's a Zsh script designed for macOS that uses diskutil to delete partitions specifically used by Asahi Linux
 
-**Before running this script, ensure you have backups of all important data, as deleting partitions can lead to data loss.**
+**Before running this script, ==ensure you have backups of all important data==, as deleting partitions can lead to data loss.**
 
-### Instructions:
+### Instructions
 
 **Make it executable:**
 
