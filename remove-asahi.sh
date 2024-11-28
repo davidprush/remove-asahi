@@ -29,24 +29,32 @@ identify_asahi_partitions() {
     }'
 }
 
-# Function to delete a partition
+# Function to delete a partition while ensuring not to delete Recovery partition
 delete_partition() {
     local disk=$1
     local partition=$2
-    echo "Deleting partition $disk$partition..."
-    diskutil eraseVolume free none $disk$partition
+    # Check if this is not the Recovery partition
+    if diskutil info $disk$partition | grep -q "Apple_Boot"; then
+        echo "Skipping deletion of Recovery partition: $disk$partition"
+    else
+        echo "Deleting partition $disk$partition..."
+        diskutil eraseVolume free none $disk$partition
+    fi
 }
 
-# New function to find and delete the APFS UEFI partition (approx. 2.5GB)
+# New function to find and delete the APFS UEFI partition (approx. 2.5GB), 
+# avoiding the Recovery partition
 delete_apfs_uefi() {
     local disk=$1
-    local apfs_part=$(diskutil list $disk | awk '$3 == "Apple_APFS" && $4 > "2G" && $4 < "3G" {print $7}')
-    if [ -n "$apfs_part" ]; then
-        echo "Deleting the APFS UEFI partition: $apfs_part"
-        diskutil apfs deleteContainer $apfs_part
-    else
-        echo "No APFS UEFI partition (2.5GB) found."
-    fi
+    local apfs_parts=$(diskutil list $disk | awk '$3 == "Apple_APFS" && $4 > "2G" && $4 < "3G" {print $7}')
+    for part in $apfs_parts; do
+        if ! diskutil info $part | grep -q "Apple_Boot"; then
+            echo "Deleting the APFS UEFI partition: $part"
+            diskutil apfs deleteContainer $part
+        else
+            echo "Skipping deletion of Recovery partition: $part"
+        fi
+    done
 }
 
 # Main script execution
@@ -75,13 +83,13 @@ main() {
             exit 0
         fi
 
-        # Delete identified partitions
+        # Delete identified partitions, skipping Recovery
         while IFS=' ' read -r label part; do
             delete_partition $disk $part
         done <<< "$partitions"
     fi
 
-    echo "Partitions have been deleted. Please verify with diskutil list."
+    echo "Partitions have been processed. Please verify with diskutil list."
 }
 
 main
