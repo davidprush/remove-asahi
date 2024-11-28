@@ -23,8 +23,8 @@ identify_asahi_partitions() {
     local disk=$1
     echo "Identifying Asahi Linux partitions on $disk..."
     diskutil list $disk | awk '{
-        if ($3 ~ /Asahi/ || $3 ~ /Linux/) {
-            print $3 " - " $4
+        if ($2 ~ /Asahi/ || $2 ~ /Linux/) {
+            print $6
         }
     }'
 }
@@ -75,8 +75,16 @@ delete_apfs_uefi() {
     local apfs_parts=$(diskutil list $disk | awk '$2 == "Apple_APFS" && $5 == "2.5" {print $7}')
     for part in $apfs_parts; do
         if can_delete_partition $part; then
-            echo "Deleting the APFS UEFI partition: $part"
-            diskutil apfs deleteContainer $part
+            echo "WARNING: The script can only assume the Asahi APFS UEFI partition by size!"
+            echo -n "$part looks like the Asahi APFS, are you sure you want to delete it: "
+            read confirm
+            if [[ ! $confirm =~ ^[Yy]$ ]]; then
+                echo "Operation cancelled.
+                echo "Deleting the APFS UEFI partition: $part"
+                diskutil apfs deleteContainer $part
+            else
+                echo "$part skipped"
+            fi
         else
             echo "Skipping deletion of protected partition: $part"
         fi
@@ -89,6 +97,8 @@ main() {
 
     list_disks
 
+    echo "WARNING: This script will permanently remove partitions."
+    echo "Changes by this script are irreversible."
     echo -n "Enter the disk identifier to target (e.g., disk0): "
     read disk
 
