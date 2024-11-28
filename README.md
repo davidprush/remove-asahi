@@ -1,4 +1,4 @@
-# remove-asahi.zsh
+# remove-asahi
 
 ## Here's a Zsh script designed for macOS that uses `diskutil` to delete partitions specifically used by Asahi Linux
 
