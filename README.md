@@ -6,6 +6,8 @@
 
 The script is meant to remove a typical install of Asahi Linux on Apple Silicon.
 
+For more information regarding macOS partitions and Asahi Linux, the Asahi team has a published a [partition cheat sheet](https://github.com/AsahiLinux/docs/wiki/Partitioning-cheatsheet).
+
 There are four partitions to remove:
 
 - Apple APFS (Apple UEFI Boot for Asahi) example: `disk0s3`
