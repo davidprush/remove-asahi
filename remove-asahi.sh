@@ -37,6 +37,18 @@ delete_partition() {
     diskutil eraseVolume free none $disk$partition
 }
 
+# New function to find and delete the APFS UEFI partition (approx. 2.5GB)
+delete_apfs_uefi() {
+    local disk=$1
+    local apfs_part=$(diskutil list $disk | awk '$3 == "Apple_APFS" && $4 > "2G" && $4 < "3G" {print $7}')
+    if [ -n "$apfs_part" ]; then
+        echo "Deleting the APFS UEFI partition: $apfs_part"
+        diskutil apfs deleteContainer $apfs_part
+    else
+        echo "No APFS UEFI partition (2.5GB) found."
+    fi
+}
+
 # Main script execution
 main() {
     check_sudo
@@ -46,26 +58,28 @@ main() {
     echo -n "Enter the disk identifier to target (e.g., disk0): "
     read disk
 
-    # Identify partitions
+    # First, handle the APFS UEFI partition
+    delete_apfs_uefi $disk
+
+    # Identify and delete other Asahi Linux partitions
     partitions=$(identify_asahi_partitions $disk)
     if [ -z "$partitions" ]; then
-        echo "No Asahi Linux partitions found."
-        exit 1
+        echo "No other Asahi Linux partitions found."
+    else
+        echo -e "\nOther Asahi Linux partitions to delete:\n$partitions"
+
+        echo -n "Are you sure you want to delete these partitions? (y/n): "
+        read confirm
+        if [[ ! $confirm =~ ^[Yy]$ ]]; then
+            echo "Operation cancelled."
+            exit 0
+        fi
+
+        # Delete identified partitions
+        while IFS=' ' read -r label part; do
+            delete_partition $disk $part
+        done <<< "$partitions"
     fi
-
-    echo -e "\nPartitions to delete:\n$partitions"
-
-    echo -n "Are you sure you want to delete these partitions? (y/n): "
-    read confirm
-    if [[ ! $confirm =~ ^[Yy]$ ]]; then
-        echo "Operation cancelled."
-        exit 0
-    fi
-
-    # Delete identified partitions
-    while IFS=' ' read -r label part; do
-        delete_partition $disk $part
-    done <<< "$partitions"
 
     echo "Partitions have been deleted. Please verify with diskutil list."
 }
