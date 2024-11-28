@@ -33,6 +33,6 @@ If you simply ran the Asahi install script and you have the default installation
 
 **Notes:**
 
-*This script uses `diskutil` to list, identify, and delete partitions. The script looks for partition labels containing "Asahi" or "Linux", which is not a definitive method, so double-check before confirming deletion.*
+*This script uses `diskutil` to list, identify, and delete partitions. The script looks for partition labels containing "Asahi" or "Linux" and attempts to identify typical macOS system partitions (including the Recovery parition), which is not a definitive method, so double-check before confirming deletion.*
 
 *Always verify the disk and partition identifiers to prevent accidental data loss.*
