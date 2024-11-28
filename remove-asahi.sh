@@ -29,30 +29,51 @@ identify_asahi_partitions() {
     }'
 }
 
-# Function to delete a partition while ensuring not to delete Recovery partition
+# Function to check if partition should be deleted
+# Prevents deletion of macOS, Apple_APFS_ISC, and Apple_Boot partitions
+can_delete_partition() {
+    local partition=$1
+    local disk=$(echo $partition | sed 's/[s0-9]*$//')
+    local vol_names=$(diskutil list $disk | awk '$3 == "Apple_APFS" {print $7}')
+    local macos_volume=$(diskutil info $vol_names | awk '/Volume Name:/ && /Macintosh HD/ {print $3}')
+
+    if [ -n "$macos_volume" ] && diskutil info $partition | grep -q "$macos_volume"; then
+        echo "Skipping macOS partition: $partition"
+        return 1  # False, do not delete macOS partition
+    fi
+
+    # Check for other protected partitions
+    if diskutil info $partition | grep -q "Apple_APFS_ISC" || diskutil info $partition | grep -q "Apple_Boot"; then
+        echo "Skipping deletion of protected partition: $partition"
+        return 1  # False, do not delete other protected partitions
+    fi
+    
+    return 0  # True, can delete
+}
+
+# Function to delete a partition if it's safe to do so
 delete_partition() {
     local disk=$1
     local partition=$2
-    # Check if this is not the Recovery partition
-    if diskutil info $disk$partition | grep -q "Apple_Boot"; then
-        echo "Skipping deletion of Recovery partition: $disk$partition"
-    else
+    if can_delete_partition $disk$partition; then
         echo "Deleting partition $disk$partition..."
         diskutil eraseVolume free none $disk$partition
+    else
+        echo "Skipping deletion of this partition."
     fi
 }
 
 # New function to find and delete the APFS UEFI partition (approx. 2.5GB), 
-# avoiding the Recovery partition
+# avoiding protected partitions including macOS
 delete_apfs_uefi() {
     local disk=$1
     local apfs_parts=$(diskutil list $disk | awk '$3 == "Apple_APFS" && $4 > "2G" && $4 < "3G" {print $7}')
     for part in $apfs_parts; do
-        if ! diskutil info $part | grep -q "Apple_Boot"; then
+        if can_delete_partition $part; then
             echo "Deleting the APFS UEFI partition: $part"
             diskutil apfs deleteContainer $part
         else
-            echo "Skipping deletion of Recovery partition: $part"
+            echo "Skipping deletion of protected partition: $part"
         fi
     done
 }
@@ -83,7 +104,7 @@ main() {
             exit 0
         fi
 
-        # Delete identified partitions, skipping Recovery
+        # Delete identified partitions, skipping protected ones
         while IFS=' ' read -r label part; do
             delete_partition $disk $part
         done <<< "$partitions"
