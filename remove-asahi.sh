@@ -30,22 +30,27 @@ identify_asahi_partitions() {
 }
 
 # Function to check if partition should be deleted
-# Prevents deletion of macOS, Apple_APFS_ISC, and Apple_Boot partitions
+# Prevents deletion of macOS System, Apple_APFS_ISC, and Apple_APFS_Recovery partitions
 can_delete_partition() {
     local partition=$1
     local disk=$(echo $partition | sed 's/[s0-9]*$//')
     local vol_names=$(diskutil list $disk | awk '$3 == "Apple_APFS" {print $7}')
-    local macos_volume=$(diskutil info $vol_names | awk '/Volume Name:/ && /Macintosh HD/ {print $3}')
+    local macos_volume=$(diskutil info $(df / | tail -1 | cut -d' ' -f 1) | awk '/APFS Physical Store:/ {print $4}')
+    local partition_type=$(diskutil info $partition | awk '/Partition Type:/ {print $3}')
 
-    if [ -n "$macos_volume" ] && diskutil info $partition | grep -q "$macos_volume"; then
-        echo "Skipping macOS partition: $partition"
-        return 1  # False, do not delete macOS partition
+    if [ "$1" == "$macos_volume" ]; then
+        echo "Skipping macOS System partition: $partition"
+        return 1  # False, do not delete macOS System partition
+    fi
+    
+    if [ "$partition_type" == "Apple_APFS_Recovery" ]; then
+        echo "Skipping Apple_APFS_Recovery partition: $partition"
+        return 1  # False, do not delete Apple_APFS_Recovery partition
     fi
 
-    # Check for macOS protected partitions
-    if diskutil info $partition | grep -q "Apple_APFS_ISC" || diskutil info $partition | grep -q "Apple_APFS_Recovery"; then
-        echo "Skipping deletion of protected partition: $partition"
-        return 1  # False, do not delete macOS protected partitions
+    if [ "$partition_type" == "Apple_APFS_ISC" ]; then
+        echo "Skipping Apple_APFS_ISC partition: $partition"
+        return 1  # False, do not delete Apple_APFS_ISC partition
     fi
     
     return 0  # True, can delete
@@ -57,7 +62,7 @@ delete_partition() {
     local partition=$2
     if can_delete_partition $disk$partition; then
         echo "Deleting partition $disk$partition..."
-        diskutil eraseVolume free none $disk$partition
+        diskutil eraseVolume free free $disk$partition
     else
         echo "Skipping deletion of this partition."
     fi
@@ -67,7 +72,7 @@ delete_partition() {
 # avoiding protected partitions including macOS
 delete_apfs_uefi() {
     local disk=$1
-    local apfs_parts=$(diskutil list $disk | awk '$3 == "Apple_APFS" && $4 > "2G" && $4 < "3G" {print $7}')
+    local apfs_parts=$(diskutil list $disk | awk '$2 == "Apple_APFS" && $5 == "2.5" {print $7}')
     for part in $apfs_parts; do
         if can_delete_partition $part; then
             echo "Deleting the APFS UEFI partition: $part"
