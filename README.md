@@ -4,6 +4,19 @@
 
 **(╭☞⌐■‿■)╭☞ Before running this script, ensure you have backups of all important data, as deleting partitions can lead to data loss.**
 
+The script is meant to a typical install of Asahi Linux on Apple Silicon.
+
+There are four partitions to remove:
+
+- Apple APFS (Apple UEFI Boot for Asahi) example: disk0s3
+- EFI EFI-Asahi example: disk0s4
+- Linux Filesystem (Asahi boot Partition) example: disk0s5
+- Linux Filesystem (Asahi root Partition) example: disk0s6
+
+ಠ_ಠ In the above example disk0s7 is the Apple APFS Recovery (System Image to Resotore macOS) ==UNDER NO CIRCUMSTANCES SHOULD YOU DELETE THIS PARTITION==.
+
+If you simply ran the Asahi install script and you had the default installation of macOS then your partitions should be similar to the above layout; however, please verify this the case for your use.
+
 ### Instructions
 
 **Make it executable:**
