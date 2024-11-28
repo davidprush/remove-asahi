@@ -42,10 +42,10 @@ can_delete_partition() {
         return 1  # False, do not delete macOS partition
     fi
 
-    # Check for other protected partitions
-    if diskutil info $partition | grep -q "Apple_APFS_ISC" || diskutil info $partition | grep -q "Apple_Boot"; then
+    # Check for macOS protected partitions
+    if diskutil info $partition | grep -q "Apple_APFS_ISC" || diskutil info $partition | grep -q "Apple_APFS_Recovery"; then
         echo "Skipping deletion of protected partition: $partition"
-        return 1  # False, do not delete other protected partitions
+        return 1  # False, do not delete macOS protected partitions
     fi
     
     return 0  # True, can delete
@@ -110,7 +110,7 @@ main() {
         done <<< "$partitions"
     fi
 
-    echo "Partitions have been processed. Please verify with diskutil list."
+    echo "Asahi partitions removed. Please verify with diskutil list."
 }
 
 main
