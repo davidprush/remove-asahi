@@ -4,7 +4,7 @@
 
 **(╭☞⌐■‿■)╭☞** **Before running this script, ensure you have backups of all important data, as deleting partitions can lead to data loss.**
 
-The script is meant to a typical install of Asahi Linux on Apple Silicon.
+The script is meant to remove a typical install of Asahi Linux on Apple Silicon.
 
 There are four partitions to remove:
 
