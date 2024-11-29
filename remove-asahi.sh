@@ -96,8 +96,8 @@ main() {
 
     list_disks
 
-    echo "WARNING: This script will permanently remove partitions."
-    echo "Changes by this script are irreversible."
+    echo "\nWARNING: This script will permanently remove partitions."
+    echo "Changes made by this script are irreversible.\n"
     echo -n "Enter the disk identifier to target (e.g., disk0): "
     read disk
 
