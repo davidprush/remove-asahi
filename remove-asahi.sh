@@ -107,7 +107,7 @@ main() {
     if [ -z "$partitions" ]; then
         echo "No other Asahi Linux partitions found."
     else
-        echo -e "\nOther Asahi Linux partitions to delete:\n$partitions"
+        echo -e "Other Asahi Linux partitions to delete: $partitions"
 
         echo -n "Are you sure you want to delete these partitions? (y/n): "
         read confirm
