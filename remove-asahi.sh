@@ -74,7 +74,7 @@ delete_apfs_uefi() {
     local disk=$1
     local apfs_parts=$(diskutil list $disk | awk '$2 == "Apple_APFS" && $5 == "2.5" {print $7}')
     if can_delete_partition $part; then
-        echo "\nWARNING: The script can only assume the Asahi APFS UEFI partition by size."
+        echo "WARNING: The script can only assume the Asahi APFS UEFI partition by size."
         echo -n "$part looks like the Asahi APFS, are you sure you want to delete it: "
         read confirm
         if [[ ! $confirm =~ ^[Yy]$ ]]; then
@@ -94,8 +94,8 @@ main() {
 
     list_disks
 
-    echo "\nWARNING: This script will permanently remove partitions."
-    echo "Changes made by this script are irreversible.\n"
+    echo "WARNING: This script will permanently remove partitions."
+    echo "Changes made by this script are irreversible."
     echo -n "Enter the disk identifier to target (e.g., disk0): "
     read disk
 
