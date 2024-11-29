@@ -73,21 +73,19 @@ delete_partition() {
 delete_apfs_uefi() {
     local disk=$1
     local apfs_parts=$(diskutil list $disk | awk '$2 == "Apple_APFS" && $5 == "2.5" {print $7}')
-    for part in $apfs_parts; do
-        if can_delete_partition $part; then
-            echo "\nWARNING: The script can only assume the Asahi APFS UEFI partition by size."
-            echo -n "$part looks like the Asahi APFS, are you sure you want to delete it: "
-            read confirm
-            if [[ ! $confirm =~ ^[Yy]$ ]]; then
-                echo "$part skipped"
-            else
-                echo "Deleting the APFS UEFI partition: $part"
-                # diskutil apfs deleteContainer $part
-            fi
+    if can_delete_partition $part; then
+        echo "\nWARNING: The script can only assume the Asahi APFS UEFI partition by size."
+        echo -n "$part looks like the Asahi APFS, are you sure you want to delete it: "
+        read confirm
+        if [[ ! $confirm =~ ^[Yy]$ ]]; then
+            echo "$part skipped"
         else
-            echo "Skipping deletion of protected partition: $part"
+            echo "Deleting the APFS UEFI partition: $part"
+             # diskutil apfs deleteContainer $part
         fi
-    done
+    else
+        echo "Skipping deletion of protected partition: $part"
+    fi
 }
 
 # Main script execution
