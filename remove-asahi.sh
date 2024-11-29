@@ -62,7 +62,7 @@ delete_partition() {
     local partition=$2
     if can_delete_partition $disk$partition; then
         echo "Deleting partition $disk$partition..."
-        diskutil eraseVolume free free $disk$partition
+        # diskutil eraseVolume free free $disk$partition
     else
         echo "Skipping deletion of this partition."
     fi
@@ -79,11 +79,10 @@ delete_apfs_uefi() {
             echo -n "$part looks like the Asahi APFS, are you sure you want to delete it: "
             read confirm
             if [[ ! $confirm =~ ^[Yy]$ ]]; then
-                echo "Operation cancelled.
-                echo "Deleting the APFS UEFI partition: $part"
-                diskutil apfs deleteContainer $part
-            else
                 echo "$part skipped"
+            else
+                echo "Deleting the APFS UEFI partition: $part"
+                # diskutil apfs deleteContainer $part
             fi
         else
             echo "Skipping deletion of protected partition: $part"
