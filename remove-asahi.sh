@@ -3,7 +3,6 @@
 # Asahi Linux Partition Deletion Script for macOS
 # Warning: This script will delete partitions. Ensure you have backups!
 
-# Function to check if the user is running with sudo privileges
 check_sudo() {
     if [[ $EUID -ne 0 ]]; then
        echo "This script must be run as root or with sudo."
@@ -11,7 +10,6 @@ check_sudo() {
     fi
 }
 
-# Function to grow macos system partition
 grow_macos_system(){
     local macos_volume=$(diskutil info $(df / | tail -1 | cut -d' ' -f 1) | awk '/APFS Physical Store:/ {print $4}')
     echo "----------------------------------------------------------------------------"
@@ -26,15 +24,12 @@ grow_macos_system(){
     echo "$macos_volume resized"
 }
 
-# Function to list disk identifiers
 list_partitions() {
     echo "Current disk0 layout:"
     echo "----------------------------------------------------------------------------"
     diskutil list disk0
 }
 
-# Function to identify Asahi Linux partitions
-# Asahi typically uses partitions labeled with something like "Asahi" or "Linux"
 identify_asahi_partitions() {
     diskutil list disk0 | awk '{
         if ($2 ~ /Asahi/ || $2 ~ /Linux/) {
@@ -46,12 +41,8 @@ identify_asahi_partitions() {
     }'
 }
 
-# Function to check if partition should be deleted
-# Prevents deletion of macOS System, Apple_APFS_ISC, and Apple_APFS_Recovery partitions
 can_delete_partition() {
     local partition=$1
-    #local disk=$(echo $partition | sed 's/[s0-9]*$//')
-    #local vol_names=$(diskutil list $disk | awk '$3 == "Apple_APFS" {print $7}')
     local macos_volume=$(diskutil info $(df / | tail -1 | cut -d' ' -f 1) | awk '/APFS Physical Store:/ {print $4}')
     local partition_type=$(diskutil info $partition | awk '/Partition Type:/ {print $3}')
     echo "----------------------------------------------------------------------------"
@@ -73,7 +64,6 @@ can_delete_partition() {
     return 0  # True, can delete
 }
 
-# Function to delete a partition if it's safe to do so
 delete_partition() {
     local partitions=$1
     echo "----------------------------------------------------------------------------"
@@ -87,8 +77,6 @@ delete_partition() {
     done
 }
 
-# New function to find and delete the APFS UEFI partition (approx. 2.5GB), 
-# avoiding protected partitions including macOS
 delete_apfs_uefi() {
     local disk=$1
     local part=$(diskutil list $disk | awk '$2 == "Apple_APFS" && $5 == "2.5" {print $7}')
@@ -116,7 +104,6 @@ delete_apfs_uefi() {
     fi
 }
 
-# Main script execution
 main() {
     check_sudo
 
@@ -132,10 +119,8 @@ main() {
         echo "Operation cancelled."
         exit 0
     fi
-    # First, handle the APFS UEFI partition
     delete_apfs_uefi $disk
 
-    # Identify and delete other Asahi Linux partitions
     partitions=$(identify_asahi_partitions)
     if [ -z "$partitions" ]; then
         echo "No other Asahi Linux partitions found."
@@ -154,7 +139,6 @@ main() {
             exit 0
         fi
 
-        # Delete identified partitions, skipping protected ones
         for part in $partitions; do
             delete_partition $part
         done
