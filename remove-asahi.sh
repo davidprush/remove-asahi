@@ -24,7 +24,7 @@ grow_macos_system(){
         exit 0
     fi
     echo "  Resizing [ $macos_volume ]"
-    #diskutil apfs resizeContainer $macos_volume 0
+    diskutil apfs resizeContainer $macos_volume 0
     echo "  [ $macos_volume ] resized"
 }
 
@@ -64,7 +64,6 @@ can_delete_partition() {
         echo "  Skipping Apple_APFS_ISC partition: [ $part ]"
         return 1  # False, do not delete Apple_APFS_ISC partition
     fi
-    
     return 0  # True, can delete
 }
 
@@ -79,7 +78,7 @@ delete_partition() {
                 echo "   Canceled [ $part ] deletion."
             else    
                 echo "  Deleting partition [ $part ]..."
-                #diskutil eraseVolume free free $part
+                diskutil eraseVolume free free $part
             fi
         else
             echo "  Skipping deletion of this partition."
@@ -114,65 +113,99 @@ delete_apfs_uefi() {
     fi
 }
 
-main() {
-    check_sudo
-
-    clear
-
-    echo $DVLINE
-    echo $FILLER
-    echo $BANNER
-    echo $FILLER
-    echo $DVLINE
-
-    list_partitions
-
-    echo $DVLINE
-    echo "WARNING: This script is designed for default Asahi installations."
-    echo "Only partitions on [ disk0 ] will be deleted."
-    echo
-    echo -n "Do you want to continue with [ disk0 ]? (y/n):"
-    read confirm
-    if [[ ! $confirm =~ ^[Yy]$ ]]; then
-        echo "Operation cancelled."
-        exit 0
+autoremove() {
+    local parts=$(diskutil list $disk | awk '$2 == "Apple_APFS" && $5 == "2.5" {print $7}')
+    local macos_volume=$(diskutil info $(df / | tail -1 | cut -d' ' -f 1) | awk '/APFS Physical Store:/ {print $4}')    
+    echo "RUNNING: autoremove, looking for and removing all Asahi partitions."
+    if can_delete_partition $parts; then
+        #diskutil apfs deleteContainer $part
+        echo "  Removed [ $parts ]"
+    else
+        echo "  No APFS Asahi Linux partition found."
     fi
-    delete_apfs_uefi $disk
-
-    partitions=$(identify_asahi_partitions)
-    if [ -z "$partitions" ]; then
-        echo "  No other Asahi Linux partitions found."
+    parts=$(identify_asahi_partitions)
+    if [ -z "$parts" ]; then
+        echo "  No other Asahi < linux filesystem > partitions found."
         exit 0
     else
-        echo $DVLINE
-        echo "Other Asahi Linux partitions to delete:"
-        echo
-        echo $partitions
-        echo
-        echo -n "Are you sure you want to delete these partitions? (y/n): "
-        read confirm
-        echo
-        if [[ ! $confirm =~ ^[Yy]$ ]]; then
-            echo "  Operation cancelled."
-            exit 0
-        fi
-
-        for part in $partitions; do
-            delete_partition $part
+        for part in $parts; do
+            if can_delete_partition $part; then
+                diskutil eraseVolume free free $part
+                echo "  Removed  [ $part ]"
+            else
+                echo "  Skipping [ $part ]..."
+            fi
         done
     fi
-    echo $DIVLINE
-    echo $FILLER
-    echo "               << Asahi partitions removed. Please verify. >>"
-    echo $FILLER
-    echo $DIVLINE
-    list_partitions
-    echo $DIVLINE
-    grow_macos_system
-    echo $DIVLINE
-    list_partitions
-    echo $DIVLINE
-    echo $DIVLINE
+    diskutil apfs resizeContainer $macos_volume 0
+    echo "  [ $macos_volume ] resized"
 }
 
-main
+main() {
+    check_sudo
+    if [ -z "$1" ]; then
+        clear
+        echo $DVLINE
+        echo $FILLER
+        echo $BANNER
+        echo $FILLER
+        echo $DVLINE
+        list_partitions
+        echo $DVLINE
+        echo "WARNING: This script is designed for default Asahi installations."
+        echo "Only partitions on [ disk0 ] will be deleted."
+        echo
+        echo -n "Do you want to continue with [ disk0 ]? (y/n):"
+        read confirm
+        if [[ ! $confirm =~ ^[Yy]$ ]]; then
+            echo "Operation cancelled."
+            exit 0
+        fi
+        delete_apfs_uefi $disk
+        partitions=$(identify_asahi_partitions)
+        if [ -z "$partitions" ]; then
+            echo "  No other Asahi Linux partitions found."
+            exit 0
+        else
+            echo $DVLINE
+            echo "Other Asahi Linux partitions to delete:"
+            echo
+            echo $partitions
+            echo
+            echo -n "Are you sure you want to delete these partitions? (y/n): "
+            read confirm
+            echo
+            if [[ ! $confirm =~ ^[Yy]$ ]]; then
+                echo "  Operation cancelled."
+                exit 0
+            fi
+
+            for part in $partitions; do
+                delete_partition $part
+            done
+        fi
+        echo $DIVLINE
+        echo $FILLER
+        echo "               << Asahi partitions removed. Please verify. >>"
+        echo $FILLER
+        echo $DIVLINE
+        list_partitions
+        echo $DIVLINE
+        grow_macos_system
+        echo $DIVLINE
+        list_partitions
+        echo $DIVLINE
+        echo $DIVLINE
+    else
+        if [ "$1" == "autoremove" ]; then
+            autoremove
+            exit 0
+        else
+            echo "INVALID COMMAND: Use [autoremove] to automatically remove Asahi and resize macOS System."
+            echo "                 or you can run it without a command for a guided removal of Asahi."
+            exit 1
+        fi
+    fi
+}
+
+main $1
