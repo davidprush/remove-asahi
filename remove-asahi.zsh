@@ -1,6 +1,6 @@
 #!/bin/zsh
 
-# Asahi Linux Partition Deletion Script for macOS
+# Asahi Linux Partition Deletion Script for macOS <BROKEN>
 # Warning: This script will delete partitions. Ensure you have backups!
 
 # Function to check if the user is running with sudo privileges
