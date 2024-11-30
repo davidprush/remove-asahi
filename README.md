@@ -1,6 +1,6 @@
 # remove-asahi
 
-## Bash and ZSH scripts designed for macOS using `diskutil` to delete Asahi Linux partitions. No script can be full-proof for this process because the options are limitless; however, this script should work for most Asahi Linux installations.
+## Bash script designed for macOS using `diskutil` to delete Asahi Linux partitions. No script can be full-proof for this process because the options are limitless; however, this script should work for most Asahi Linux installations.
 
 **(⌐■‿■)╭☞** **Before running this script, ensure you have backups of all important data, as deleting partitions can lead to data loss.**
 
