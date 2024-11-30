@@ -14,8 +14,8 @@ check_sudo() {
 # Function to grow macos system partition
 grow_macos_system(){
     local macos_volume=$(diskutil info $(df / | tail -1 | cut -d' ' -f 1) | awk '/APFS Physical Store:/ {print $4}')
-    echo " "
-    echo -n "Do you want to resize macOS System $macos_volume to fill free space? (y/n):"
+    echo "----------------------------------------------------------------------------"
+    echo -n "Do you want to resize macOS System $macos_volume to reclaim free space? (y/n):"
     read confirm
     if [[ ! $confirm =~ ^[Yy]$ ]]; then
         echo "Operation cancelled."
@@ -29,6 +29,7 @@ grow_macos_system(){
 # Function to list disk identifiers
 list_partitions() {
     echo "Available disk identifiers:"
+    echo "----------------------------------------------------------------------------"
     diskutil list disk0
 }
 
@@ -53,7 +54,7 @@ can_delete_partition() {
     #local vol_names=$(diskutil list $disk | awk '$3 == "Apple_APFS" {print $7}')
     local macos_volume=$(diskutil info $(df / | tail -1 | cut -d' ' -f 1) | awk '/APFS Physical Store:/ {print $4}')
     local partition_type=$(diskutil info $partition | awk '/Partition Type:/ {print $3}')
-
+    echo "----------------------------------------------------------------------------"
     if [ "$partition" == "$macos_volume" ]; then
         echo "Skipping macOS System partition: $partition"
         return 1  # False, do not delete macOS System partition
@@ -75,6 +76,7 @@ can_delete_partition() {
 # Function to delete a partition if it's safe to do so
 delete_partition() {
     local partitions=$1
+    echo "----------------------------------------------------------------------------"
     for part in $partitions; do
         if can_delete_partition $part; then
             echo "Deleting partition $part..."
@@ -91,15 +93,17 @@ delete_apfs_uefi() {
     local disk=$1
     local part=$(diskutil list $disk | awk '$2 == "Apple_APFS" && $5 == "2.5" {print $7}')
     if can_delete_partition $part; then
-        echo " "
+        echo "----------------------------------------------------------------------------"
         echo "WARNING: This script assumes the Asahi container by type and size."
         echo "The first partition to identify for deletion:"
+        echo " "
         echo "Asahi Apple APFS Container Disk (2.5GB)"
         echo " "
         echo "$part looks like the Asahi Apple APFS container (2.5GB)"
         echo " "
         echo -n "Are you sure you want to delete $part? (y/n): "
         read confirm
+        echo " "
         if [[ ! $confirm =~ ^[Yy]$ ]]; then
             echo "$part skipped"
         else
@@ -117,12 +121,13 @@ main() {
     check_sudo
 
     list_partitions
-    echo " "
+    echo "----------------------------------------------------------------------------"
     echo "WARNING: This script is designed for default Asahi installations."
-    echo "Partitions will only be deleted from disk0"
+    echo "Only partitions on disk0 will be deleted."
     echo " "
     echo -n "Do you want to continue with disk0? (y/n):"
     read confirm
+    echo " "
     if [[ ! $confirm =~ ^[Yy]$ ]]; then
         echo "Operation cancelled."
         exit 0
@@ -136,13 +141,14 @@ main() {
         echo "No other Asahi Linux partitions found."
         exit 0
     else
-        echo " "
+        echo "----------------------------------------------------------------------------"
         echo "Other Asahi Linux partitions to delete:"
         echo " "
         echo $partitions
         echo " "
         echo -n "Are you sure you want to delete these partitions? (y/n): "
         read confirm
+        echo " "
         if [[ ! $confirm =~ ^[Yy]$ ]]; then
             echo "Operation cancelled."
             exit 0
@@ -155,6 +161,7 @@ main() {
     fi
 
     echo "Asahi partitions removed. Please verify."
+    echo " "
     list_partitions
     grow_macos_system
     list_partitions
