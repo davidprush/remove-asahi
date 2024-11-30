@@ -28,7 +28,7 @@ grow_macos_system(){
 
 # Function to list disk identifiers
 list_partitions() {
-    echo "Available disk identifiers:"
+    echo "Current disk0 layout:"
     echo "----------------------------------------------------------------------------"
     diskutil list disk0
 }
