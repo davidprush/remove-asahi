@@ -22,7 +22,7 @@ grow_macos_system(){
         exit 0
     fi
     echo "Resizing $macos_volume"
-    #diskutil apfs resizeContainer $macos_volume 0
+    diskutil apfs resizeContainer $macos_volume 0
     echo "$macos_volume resized"
 }
 
@@ -80,7 +80,7 @@ delete_partition() {
     for part in $partitions; do
         if can_delete_partition $part; then
             echo "Deleting partition $part..."
-            # diskutil eraseVolume free free $part
+            diskutil eraseVolume free free $part
         else
             echo "Skipping deletion of this partition."
         fi
@@ -108,7 +108,7 @@ delete_apfs_uefi() {
             echo "$part skipped"
         else
             echo "Deleting the APFS UEFI partition: $part..."
-             # diskutil apfs deleteContainer $part
+             diskutil apfs deleteContainer $part
             echo "$part deleted"
         fi
     else
