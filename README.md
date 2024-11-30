@@ -26,11 +26,11 @@ If you simply ran the Asahi install script when you installed Asahi Linux, and y
 
 **Make it executable:**
 
-`chmod +x remove-asahi.zsh`
+`chmod +x remove-asahi.sh`
 
 **Run with sudo:**
 
-`sudo ./remove-asahi.zsh`
+`sudo ./remove-asahi.sh`
 
 **Notes:**
 
