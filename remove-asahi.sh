@@ -1,5 +1,5 @@
 #!/bin/bash
-
+# License: MIT
 # Asahi Linux Partition Deletion Script for macOS
 # Warning: This script will delete partitions. Ensure you have backups!
 
