@@ -36,10 +36,10 @@ list_partitions() {
 
 identify_asahi_partitions() {
     diskutil list disk0 | awk '{
-        if ($4 ~ /Asahi/ || $2 ~ /Linux/) {
+        if ($2 ~ /Linux/) {
             print $6
         }
-        if ($2 ~ /EFI/) {
+        if ($2 ~ /EFI/) || ($5 ~ /ASAHI/ {
             print $8 
         }
     }'
