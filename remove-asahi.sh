@@ -105,7 +105,7 @@ delete_apfs_uefi() {
             echo "  [ $part ] skipped"
         else
             echo "  Deleting the APFS UEFI partition: [ $part ]..."
-            #diskutil apfs deleteContainer $part
+            diskutil apfs deleteContainer $part
             echo "  [ $part ] deleted"
         fi
     else
@@ -118,7 +118,7 @@ autoremove() {
     local macos_volume=$(diskutil info $(df / | tail -1 | cut -d' ' -f 1) | awk '/APFS Physical Store:/ {print $4}')    
     echo "RUNNING: autoremove, looking for and removing all Asahi partitions."
     if can_delete_partition $parts; then
-        #diskutil apfs deleteContainer $part
+        diskutil apfs deleteContainer $part
         echo "  Removed [ $parts ]"
     else
         echo "  No APFS Asahi Linux partition found."
