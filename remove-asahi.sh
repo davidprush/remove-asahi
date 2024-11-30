@@ -39,7 +39,7 @@ identify_asahi_partitions() {
         if ($2 ~ /Linux/) {
             print $6
         }
-        if ($2 ~ /EFI/) || ($5 ~ /ASAHI/ {
+        if ($2 ~ /EFI/ || $5 ~ /ASAHI/) {
             print $8 
         }
     }'
@@ -73,8 +73,14 @@ delete_partition() {
     echo $DVLINE
     for part in $partitions; do
         if can_delete_partition $part; then
-            echo "  Deleting partition [ $part ]..."
-            #diskutil eraseVolume free free $part
+            echo -n "Are you sure you want to delete [ $part ]? (y/n):"
+            read confirm
+            if [[ ! $confirm =~ ^[Yy]$ ]]; then
+                echo "   Canceled [ $part ] deletion."
+            else    
+                echo "  Deleting partition [ $part ]..."
+                #diskutil eraseVolume free free $part
+            fi
         else
             echo "  Skipping deletion of this partition."
         fi
@@ -157,7 +163,7 @@ main() {
     fi
     echo $DIVLINE
     echo $FILLER
-    echo "                << Asahi partitions removed. Please verify. >>"
+    echo "               << Asahi partitions removed. Please verify. >>"
     echo $FILLER
     echo $DIVLINE
     list_partitions
@@ -165,7 +171,8 @@ main() {
     grow_macos_system
     echo $DIVLINE
     list_partitions
-
+    echo $DIVLINE
+    echo $DIVLINE
 }
 
 main
