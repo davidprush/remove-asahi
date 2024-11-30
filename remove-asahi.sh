@@ -3,6 +3,22 @@
 # Asahi Linux Partition Deletion Script for macOS
 # Warning: This script will delete partitions. Ensure you have backups!
 
+BANNER=":::::::::  :::::::::: ::::    ::::   ::::::::  :::     ::: :::::::::: 
+:+:    :+: :+:        +:+:+: :+:+:+ :+:    :+: :+:     :+: :+:        
++:+    +:+ +:+        +:+ +:+:+ +:+ +:+    +:+ +:+     +:+ +:+        
++#++:++#:  +#++:++#   +#+  +:+  +#+ +#+    +:+ +#+     +:+ +#++:++#   
++#+    +#+ +#+        +#+       +#+ +#+    +#+  +#+   +#+  +#+        
+#+#    #+# #+#        #+#       #+# #+#    #+#   #+#+#+#   #+#        
+###    ### ########## ###       ###  ########      ###     ########## 
+          :::      ::::::::      :::     :::    ::: :::::::::::       
+        :+: :+:   :+:    :+:   :+: :+:   :+:    :+:     :+:           
+       +:+   +:+  +:+         +:+   +:+  +:+    +:+     +:+           
+      +#++:++#++: +#++:++#++ +#++:++#++: +#++:++#++     +#+           
+      +#+     +#+        +#+ +#+     +#+ +#+    +#+     +#+           
+      #+#     #+# #+#    #+# #+#     #+# #+#    #+#     #+#           
+      ###     ###  ########  ###     ### ###    ### ###########       "
+DIVIDER="____________________________________________________________________________"
+
 check_sudo() {
     if [[ $EUID -ne 0 ]]; then
        echo "This script must be run as root or with sudo."
@@ -12,7 +28,7 @@ check_sudo() {
 
 grow_macos_system(){
     local macos_volume=$(diskutil info $(df / | tail -1 | cut -d' ' -f 1) | awk '/APFS Physical Store:/ {print $4}')
-    echo "----------------------------------------------------------------------------"
+    echo $DIVIDER
     echo -n "Do you want to resize macOS System $macos_volume to reclaim free space? (y/n):"
     read confirm
     if [[ ! $confirm =~ ^[Yy]$ ]]; then
@@ -26,13 +42,13 @@ grow_macos_system(){
 
 list_partitions() {
     echo "Current disk0 layout:"
-    echo "----------------------------------------------------------------------------"
+    echo $DIVIDER
     diskutil list disk0
 }
 
 identify_asahi_partitions() {
     diskutil list disk0 | awk '{
-        if ($2 ~ /Asahi/ || $2 ~ /Linux/) {
+        if ($4 ~ /Asahi/ || $2 ~ /Linux/) {
             print $6
         }
         if ($2 ~ /EFI/) {
@@ -45,7 +61,7 @@ can_delete_partition() {
     local partition=$1
     local macos_volume=$(diskutil info $(df / | tail -1 | cut -d' ' -f 1) | awk '/APFS Physical Store:/ {print $4}')
     local partition_type=$(diskutil info $partition | awk '/Partition Type:/ {print $3}')
-    echo "----------------------------------------------------------------------------"
+    echo $DIVIDER
     if [ "$partition" == "$macos_volume" ]; then
         echo "Skipping macOS System partition: $partition"
         return 1  # False, do not delete macOS System partition
@@ -66,7 +82,7 @@ can_delete_partition() {
 
 delete_partition() {
     local partitions=$1
-    echo "----------------------------------------------------------------------------"
+    echo $DIVIDER
     for part in $partitions; do
         if can_delete_partition $part; then
             echo "Deleting partition $part..."
@@ -81,17 +97,17 @@ delete_apfs_uefi() {
     local disk=$1
     local part=$(diskutil list $disk | awk '$2 == "Apple_APFS" && $5 == "2.5" {print $7}')
     if can_delete_partition $part; then
-        echo "----------------------------------------------------------------------------"
+        echo $DIVIDER
         echo "WARNING: This script assumes the Asahi container by type and size."
         echo "The first partition to identify for deletion:"
-        echo " "
+        echo
         echo "Asahi Apple APFS Container Disk (2.5GB)"
-        echo " "
+        echo
         echo "$part looks like the Asahi Apple APFS container (2.5GB)"
-        echo " "
+        echo
         echo -n "Are you sure you want to delete $part? (y/n): "
         read confirm
-        echo " "
+        echo
         if [[ ! $confirm =~ ^[Yy]$ ]]; then
             echo "$part skipped"
         else
@@ -107,14 +123,15 @@ delete_apfs_uefi() {
 main() {
     check_sudo
 
+    echo $BANNER
     list_partitions
-    echo "----------------------------------------------------------------------------"
+    echo $DIVIDER
     echo "WARNING: This script is designed for default Asahi installations."
     echo "Only partitions on disk0 will be deleted."
-    echo " "
+    echo
     echo -n "Do you want to continue with disk0? (y/n):"
     read confirm
-    echo " "
+    echo
     if [[ ! $confirm =~ ^[Yy]$ ]]; then
         echo "Operation cancelled."
         exit 0
@@ -126,14 +143,14 @@ main() {
         echo "No other Asahi Linux partitions found."
         exit 0
     else
-        echo "----------------------------------------------------------------------------"
+        echo $DIVIDER
         echo "Other Asahi Linux partitions to delete:"
-        echo " "
+        ech
         echo $partitions
-        echo " "
+        echo
         echo -n "Are you sure you want to delete these partitions? (y/n): "
         read confirm
-        echo " "
+        echo
         if [[ ! $confirm =~ ^[Yy]$ ]]; then
             echo "Operation cancelled."
             exit 0
@@ -145,7 +162,7 @@ main() {
     fi
 
     echo "Asahi partitions removed. Please verify."
-    echo " "
+    echo
     list_partitions
     grow_macos_system
     list_partitions
