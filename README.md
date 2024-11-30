@@ -37,3 +37,5 @@ If you simply ran the Asahi install script when you installed Asahi Linux, and y
 *This script uses `diskutil` to list, identify, and delete partitions. The script looks for partition labels containing "Asahi" or "Linux" and attempts to identify typical macOS system partitions (including the Recovery parition), which is not a definitive method, so double-check before confirming deletion.*
 
 *Always verify the disk and partition identifiers to prevent accidental data loss.*
+
+*If you plan on reinstalling Asahi Linux with the available free space after deleting the old installation's partitions then type `n` when asked to resize the macOS System by reclaiming free space.*
