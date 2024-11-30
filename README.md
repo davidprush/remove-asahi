@@ -39,3 +39,6 @@ If you simply ran the Asahi install script when you installed Asahi Linux, and y
 *Always verify the disk and partition identifiers to prevent accidental data loss.*
 
 *If you plan on reinstalling Asahi Linux with the available free space after deleting the old installation's partitions then type `n` when asked to resize the macOS System by reclaiming free space.*
+
+**Screenshot:**
+![Alt text](https://github.com/davidprush/remove-asahi/blob/main/remove-asahi-example.png "Screenshot")
