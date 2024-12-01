@@ -24,6 +24,9 @@ If you simply ran the Asahi install script when you installed Asahi Linux, and y
 
 ### Instructions
 
+**Download script using terminal:**
+`curl https://raw.githubusercontent.com/davidprush/remove-asahi/refs/heads/main/remove-asahi.sh > remove-asahi.sh`
+
 **Make it executable:**
 
 `chmod +x remove-asahi.sh`
