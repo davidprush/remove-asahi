@@ -17,6 +17,7 @@ check_sudo() {
 grow_macos_system(){
     local macos_volume=$(diskutil info $(df / | tail -1 | cut -d' ' -f 1) | awk '/APFS Physical Store:/ {print $4}')
     echo $DVLINE
+    echo "WARNING: During the resizing your system may temporarily freeze, this is normal."
     echo -n "Do you want to resize macOS System [ $macos_volume ] to reclaim free space? (y/n):"
     read confirm
     if [[ ! $confirm =~ ^[Yy]$ ]]; then
