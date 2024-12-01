@@ -34,11 +34,13 @@ If you simply ran the Asahi install script when you installed Asahi Linux, and y
 
 **Notes:**
 
-*This script uses `diskutil` to list, identify, and delete partitions. The script looks for partition labels containing "Asahi" or "Linux" and attempts to identify typical macOS system partitions (including the Recovery parition), which is not a definitive method, so double-check before confirming deletion.*
+*This script uses `diskutil` to list, identify, delete, and resize partitions. The script looks for partition labels containing "Asahi", "Linux", "EFI", or "APFS" and a size of 2.5GB then identifies typical macOS system partitions (including the Recovery parition), which is not a definitive method, so double-check before confirming any action.*
 
 *Always verify the disk and partition identifiers to prevent accidental data loss.*
 
 *If you plan on reinstalling Asahi Linux with the available free space after deleting the old installation's partitions then type `n` when asked to resize the macOS System by reclaiming free space.*
+
+*The script also contains the ability to automatically remove all Asahi partitions and resize the MacOS System, without user interaction. To automatically run all operations of the script use the following command: `sudo ./remove-asahi.sh autoremove`. 
 
 **Example of the script running:**
 ```
