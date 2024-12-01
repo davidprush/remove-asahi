@@ -170,7 +170,7 @@ warning: inode (id 46106285): Resource Fork xattr is missing or empty for compre
 Checking the extent ref tree
 Checking the file key rolling tree
 Verifying volume object map space
-The volume /dev/rdisk4s1 with UUID EEB438F6-F582-4EBA-8951-063CA46488B4 was found to be corrupt and needs to be repaired
+The volume /dev/rdisk4s1 with UUID **************************** was found to be corrupt and needs to be repaired
 Checking volume /dev/rdisk4s2
 Checking the APFS volume superblock
 The volume Update was formatted by com.apple.MobileSof (2142.81.1) and last modified by apfs_kext (2313.41.1)
@@ -180,19 +180,19 @@ Checking the snapshot metadata
 Checking the fsroot tree
 Checking the extent ref tree
 Verifying volume object map space
-The volume /dev/rdisk4s2 with UUID 877F5042-0B50-421F-8836-022FAC113A82 appears to be OK
+The volume /dev/rdisk4s2 with UUID *********************************** appears to be OK
 Checking volume /dev/rdisk4s3
 Checking the APFS volume superblock
 The volume Macintosh HD was formatted by com.apple.MobileSof (2142.81.1) and last modified by apfs_kext (2313.41.1)
 Checking the object map
 Checking the snapshot metadata tree
 Checking the snapshot metadata
-Checking snapshot 1 of 1 (com.apple.os.update-151731D20D0972F39B434E2361ADB6B6BDD545C4F7D1DA7F6A031731952B6956, transaction ID 7826306)
+Checking snapshot 1 of 1 (com.apple.os.update-************************************************, transaction ID 7826306)
 Checking the fsroot tree
 Checking the file extent tree
 Checking the extent ref tree
 Verifying volume object map space
-The volume /dev/rdisk4s3 with UUID 33AC88C1-2DB7-475B-A2F3-132F4CC41059 appears to be OK
+The volume /dev/rdisk4s3 with UUID *********************************** appears to be OK
 Checking volume /dev/rdisk4s4
 Checking the APFS volume superblock
 The volume Preboot was formatted by com.apple.MobileSof (2142.81.1) and last modified by apfs_kext (2313.41.1)
@@ -202,7 +202,7 @@ Checking the snapshot metadata
 Checking the fsroot tree
 Checking the extent ref tree
 Verifying volume object map space
-The volume /dev/rdisk4s4 with UUID 772448CE-D011-41F8-88BF-9DA1FFC29FCE appears to be OK
+The volume /dev/rdisk4s4 with UUID ***************************************** appears to be OK
 Checking volume /dev/rdisk4s5
 Checking the APFS volume superblock
 The volume Recovery was formatted by com.apple.MobileSof (2142.81.1) and last modified by apfs_kext (2313.41.1)
@@ -212,7 +212,7 @@ Checking the snapshot metadata
 Checking the fsroot tree
 Checking the extent ref tree
 Verifying volume object map space
-The volume /dev/rdisk4s5 with UUID BBE6A260-29C0-405F-A8B9-248D57A8924B appears to be OK
+The volume /dev/rdisk4s5 with UUID ********************************************* appears to be OK
 Checking volume /dev/rdisk4s6
 Checking the APFS volume superblock
 The volume VM was formatted by com.apple.MobileSof (2142.81.1) and last modified by apfs_kext (2313.41.1)
@@ -222,7 +222,7 @@ Checking the snapshot metadata
 Checking the fsroot tree
 Checking the extent ref tree
 Verifying volume object map space
-The volume /dev/rdisk4s6 with UUID 6E2074E3-8FA4-410F-88A1-41EF5602FAA3 appears to be OK
+The volume /dev/rdisk4s6 with UUID ******************************************* appears to be OK
 Verifying allocated space
 Performing deferred repairs
 warning: need to clear bsd flags (0x20) in inode (object-id 1654800)
