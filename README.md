@@ -1,3 +1,101 @@
+# Asahi Linux Partition Deletion Script
+
+A Bash script to safely remove Asahi Linux partitions from macOS systems and reclaim disk space.
+
+## Overview
+
+This script helps macOS users remove Asahi Linux installations from their system by:
+- Identifying Asahi-related partitions
+- Safely deleting them with user confirmation
+- Resizing the macOS partition to reclaim free space
+
+## Features
+
+- Interactive mode with step-by-step confirmation
+- Automatic mode (`autoremove`) for quick removal
+- Protects critical macOS system partitions
+- Displays disk layout before and after operations
+- Clear warnings and user prompts
+
+## Requirements
+
+- macOS system with root privileges
+- Asahi Linux installed on `disk0`
+- Bash shell (default on macOS)
+
+## Usage
+
+1. **Download the script:**
+   curl -O https://raw.githubusercontent.com/[your-repo]/asahi-removal-script/asahi_remove.sh
+
+2. **Make it executable:**
+   chmod +x asahi_remove.sh
+
+3. **Run with sudo:**
+   - Interactive mode:
+     sudo ./asahi_remove.sh
+   - Automatic mode:
+     sudo ./asahi_remove.sh autoremove
+
+## Warning
+
+- **Backup your data**: This script deletes partitions and could result in data loss if used incorrectly.
+- Requires root privileges (sudo)
+- Designed for default Asahi Linux installations on `disk0`
+- System may temporarily freeze during resize operations (normal behavior)
+
+## How It Works
+
+1. **Interactive Mode**:
+   - Shows current disk layout
+   - Identifies Asahi partitions
+   - Prompts for confirmation before each deletion
+   - Resizes macOS partition at the end
+   - Displays final disk layout
+
+2. **Automatic Mode** (`autoremove`):
+   - Automatically removes identified Asahi partitions
+   - Still requires confirmation for each deletion
+   - Resizes macOS partition automatically
+
+## Protected Partitions
+
+The script prevents deletion of:
+- macOS System partition
+- Apple_APFS_Recovery partition
+- Apple_APFS_ISC partition
+
+## Error Handling
+
+- Checks for sudo privileges
+- Validates disk existence
+- Reports failures in disk operations
+- Exits cleanly on errors or cancellations
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/improvement`)
+3. Commit your changes (`git commit -am 'Add improvement'`)
+4. Push to the branch (`git push origin feature/improvement`)
+5. Create a new Pull Request
+
+## Disclaimer
+
+Use at your own risk. The authors are not responsible for data loss or system issues resulting from the use of this script. Always ensure you have backups before proceeding.
+
+## Support
+
+For issues or questions, please open an issue on the GitHub repository.
+
+# -----------------------------------------------------------------------------------------------------------------------
+# OLD.README.md contents set aside for removal after above section is completed
+# -----------------------------------------------------------------------------------------------------------------------
+
 # remove-asahi
 
 ## Bash script designed for macOS using `diskutil` to delete Asahi Linux partitions. No script can be full-proof for this process because the options are limitless; however, this script should work for most Asahi Linux installations.
