@@ -26,16 +26,23 @@ This script helps macOS users remove Asahi Linux installations from their system
 ## Usage
 
 1. **Download the script:**
-   curl -O https://raw.githubusercontent.com/[your-repo]/asahi-removal-script/asahi_remove.sh
+   ```sh
+   curl -O https://raw.githubusercontent.com/davidprush/remove-asahi/refs/heads/main/remove-asahi.sh > remove-asahi.sh`
+   ```
 
-2. **Make it executable:**
+3. **Make it executable:**
+   ```sh
    chmod +x asahi_remove.sh
-
-3. **Run with sudo:**
+   ```
+5. **Run with sudo:**
    - Interactive mode:
+     ```sh
      sudo ./asahi_remove.sh
+     ```
    - Automatic mode:
+     ```sh
      sudo ./asahi_remove.sh autoremove
+     ```
 
 ## Warning
 
