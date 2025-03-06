@@ -99,9 +99,9 @@ Use at your own risk. The authors are not responsible for data loss or system is
 
 For issues or questions, please open an issue on the GitHub repository.
 
-# -----------------------------------------------------------------------------
+# ---------------------------------------------
 # OLD.README.md contents set aside for removal after above section is completed
-# -----------------------------------------------------------------------------
+# ---------------------------------------------
 
 # remove-asahi
 
