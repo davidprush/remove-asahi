@@ -27,7 +27,7 @@ This script helps macOS users remove Asahi Linux installations from their system
 
 1. **Download the script:**
    ```sh
-   curl -O https://raw.githubusercontent.com/davidprush/remove-asahi/refs/heads/main/remove-asahi.sh > remove-asahi.sh`
+   curl -O https://raw.githubusercontent.com/davidprush/RemoveAsahi/refs/heads/main/RemoveAsahi.sh > RemoveAsahi.sh`
    ```
 
 3. **Make it executable:**
@@ -103,7 +103,7 @@ For issues or questions, please open an issue on the GitHub repository.
 # OLD.README.md contents set aside for removal after above section is completed
 # ---------------------------------------------
 
-# remove-asahi
+# RemoveAsahi
 
 ## Bash script designed for macOS using `diskutil` to delete Asahi Linux partitions. No script can be full-proof for this process because the options are limitless; however, this script should work for most Asahi Linux installations.
 
@@ -130,15 +130,15 @@ If you simply ran the Asahi install script when you installed Asahi Linux, and y
 ### Instructions
 
 **Download script using terminal:**
-`curl https://raw.githubusercontent.com/davidprush/remove-asahi/refs/heads/main/remove-asahi.sh > remove-asahi.sh`
+`curl https://raw.githubusercontent.com/davidprush/RemoveAsahi/refs/heads/main/RemoveAsahi.sh > RemoveAsahi.sh`
 
 **Make it executable:**
 
-`chmod +x remove-asahi.sh`
+`chmod +x RemoveAsahi.sh`
 
 **Run with sudo:**
 
-`sudo ./remove-asahi.sh`
+`sudo ./RemoveAsahi.sh`
 
 **Notes:**
 
@@ -148,7 +148,7 @@ If you simply ran the Asahi install script when you installed Asahi Linux, and y
 
 *If you plan on reinstalling Asahi Linux with the available free space after deleting the old installation's partitions then type `n` when asked to resize the macOS System by reclaiming free space.*
 
-*The script also contains the ability to automatically remove all Asahi partitions and resize the MacOS System, without user interaction. To automatically run all operations of the script use the following command: `sudo ./remove-asahi.sh autoremove`. 
+*The script also contains the ability to automatically remove all Asahi partitions and resize the MacOS System, without user interaction. To automatically run all operations of the script use the following command: `sudo ./RemoveAsahi.sh autoremove`. 
 
 **Example of the script running:**
 ```
